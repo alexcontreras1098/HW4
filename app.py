@@ -37,7 +37,7 @@ class PlayerForm(FlaskForm):
 @app.route('/')
 def index():
     all_players = acntreras_soccerplayersapp.query.all()
-    return render_template('index.html', dogs=all_players, pageTitle='Alex\'s Players')
+    return render_template('index.html', players=all_players, pageTitle='Alex\'s Players')
 
 @app.route('/add_player', methods=['GET', 'POST'])
 def add_player():
@@ -52,7 +52,7 @@ def add_player():
     return render_template('add_player.html', form=form, pageTitle='Add A New Player')
 
 @app.route('/delete_player/<int:soccer_playerId>', methods=['GET','POST'])
-def delete_dog(soccer_playerId):
+def delete_player(soccer_playerId):
     if request.method == 'POST': #if it's a POST request, delete the friend from the database
         obj = acntreras_soccerplayersapp.query.filter_by(soccer_playerId=soccer_playerId).first()
         db.session.delete(obj)
