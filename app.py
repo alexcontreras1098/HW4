@@ -1,18 +1,16 @@
 from flask import Flask
-from flask import render_template, redirect, request, flash, url_for
+from flask import render_template, redirect, request, flash
 from flask_wtf import FlaskForm
 from wtforms import StringField
 from wtforms.validators import DataRequired
 from flask_sqlalchemy import SQLAlchemy
 import pymysql
-#import secrets
 import os
 
 dbuser = os.environ.get('DBUSER')
 dbpass = os.environ.get('DBPASS')
 dbhost = os.environ.get('DBHOST')
 dbname = os.environ.get('DBNAME')
-
 conn = "mysql+pymysql://{0}:{1}@{2}/{3}".format(dbuser, dbpass, dbhost, dbname)
 
 app = Flask(__name__)
@@ -28,25 +26,24 @@ class acntreras_soccerplayersapp(db.Model):
     nationality = db.Column(db.String(255))
 
     def __repr__(self):
-        return "id: {0} | first name: {1} | last name: {2} | clubteam: {3} | nationality: {4} ".format(self.id, self.first_name, self.last_name, self.clubteam, self.nationality)
-
+        return "id: {0} | first name: {1} | last name: {2} | clubteam: {3} | nationality: {4}".format(self.id, self.first_name, self.last_name, self.clubteam, self.nationality)
 
 class PlayerForm(FlaskForm):
-    first_name = StringField('First Name:', validators=[DataRequired()])
-    last_name = StringField('Last Name:', validators=[DataRequired()])
-    clubteam = StringField('Club team:', validators=[DataRequired()])
-    nationality = StringField('Nationality:', validators=[DataRequired()])
+    first_name = StringField('first name:', validators=[DataRequired()])
+    last_name = StringField('last name:', validators=[DataRequired()])
+    clubteam= StringField('clubteam: ', validators=[DataRequired()])
+    nationality= StringField('nationality: ', validators=[DataRequired()])
 
 @app.route('/')
 def index():
     all_players = acntreras_soccerplayersapp.query.all()
-    return render_template('index.html', players=all_players, pageTitle='Favorite Soccer Players')
+    return render_template('index.html', dogs=all_players, pageTitle='Alex\'s Players')
 
 @app.route('/add_player', methods=['GET', 'POST'])
 def add_player():
     form = PlayerForm()
     if form.validate_on_submit():
-        player = acntreras_soccerplayersapp(first_name=form.first_name.data, last_name=form.last_name.data, clubteam=form.clubteam.data, nationality=form.nationality.data)
+        player = acntreras_soccerplayersapp(first_name=form.first_name.data, last_name=form.last_name.data, clubteam=form.clubteam.data, nationality=form.nationality.data )
         db.session.add(player)
         db.session.commit()
         print('Player was successully added!')
@@ -54,16 +51,18 @@ def add_player():
 
     return render_template('add_player.html', form=form, pageTitle='Add A New Player')
 
-@app.route('/player/<int:soccer_playerId>/delete', methods=['POST'])
-def delete_player(soccer_playerId):
+@app.route('/delete_player/<int:soccer_playerId>', methods=['GET','POST'])
+def delete_dog(soccer_playerId):
     if request.method == 'POST': #if it's a POST request, delete the friend from the database
-        player = acntreras_soccerplayersapp.query.get_or_404(friend_id)
-        db.session.delete(player)
+        obj = acntreras_soccerplayersapp.query.filter_by(soccer_playerId=soccer_playerId).first()
+        db.session.delete(obj)
         db.session.commit()
         flash('Player was successfully deleted!')
         return redirect("/")
+
     else: #if it's a GET request, send them to the home page
         return redirect("/")
+
 
 if __name__ == '__main__':
     app.run(debug=True)
