@@ -1,8 +1,14 @@
 
 {% extends 'base.html' %}
 
+
 {% block body %}
-<p><a href="{{ url_for('.add_player')}}"> Add a new player</a>
+<form method="POST">
+  <input type="text" autofocus="autofocus" name="search_string">
+  <input type="submit" formaction="/search" value="Search">
+  </form>
+
+<p><a href="{{ url_for('add_player')}}"> Add a new player</a>
 {% with messages = get_flashed_messages() %}
 {% if messages %}
 <div id='flash'>
@@ -19,7 +25,7 @@
     <table>
         <thead>
             <tr>
-                <th>soccer_playerId</th>
+
                 <th>first_name</th>
                 <th>last_name</th>
                 <th>clubteam</th>
@@ -32,14 +38,13 @@
 
             {% for row in players %}      <tr>
 
-                <td> {{ row.soccer_playerId }}</td>
                 <td> {{ row.first_name }}</td>
                 <td> {{ row.last_name }}</td>
                 <td> {{ row.clubteam }}</td>
                 <td> {{ row.nationality }}</td>
       <td>
-        <form action="/delete_player/{{ row.soccer_playerId }}" method="POST">
-          <input type="submit" value="Delete" class="btn btn-danger" />
+        <form action="/player/{{ row.soccer_playerId }}" method="POST">
+          <input type="submit" value="Details" class="btn btn-danger" />
         </form>
       </td>
             </tr>

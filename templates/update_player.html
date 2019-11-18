@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block body %}
+<div>
+
+  <p><a href="{{ url_for('index')}}"> Home </a></p>
+  <h3>{{ legend }}</h3>
+
+
+
+  <form method="POST" action="">
+
+
+    {{ form.csrf_token }}
+    {{ form.soccer_playerId.label }} {{ form.soccer_playerId(size=5, readonly=true) }}
+    {{ form.first_name.label }} {{ form.first_name(size=20) }}
+    {{ form.last_name.label }} {{ form.last_name(size=20) }}
+    {{ form.clubteam.label }} {{ form.clubteam(size=20) }}
+    {{ form.nationality.label }} {{ form.nationality(size=20) }}
+
+
+    <input type="submit" value="Save">
+
+  </form>
+
+</div>
+{% endblock %}
